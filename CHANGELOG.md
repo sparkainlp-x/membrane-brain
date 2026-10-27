@@ -18,6 +18,16 @@ are unchanged from the supplied version.
   `.zenodo.json` (no DOI; none has been issued), `.gitignore`.
 - README section pointing to the results; DESIGN.md addendum.
 - Author affiliation in `CITATION.cff` and `.zenodo.json`, copied from membrane-arena-3x3.
+- `docs/game/`: "The Gate", a single-page browser game that runs the real
+  `brain.py` in a vendored Pyodide 0.26.1 (WebAssembly; no CDN, no tracking), with a
+  "Test the code" panel that reproduces the README numbers live. Tests:
+  `tests_game.py` (CPython, golden values at seed 42) and `tests_game_browser.py`
+  (headless Chromium, compares the page with CPython); a `game-browser` CI job.
+  GitHub Pages is not enabled by this change.
+- `scripts/release_check.py` and `tests_release.py`: version, licence, ORCID,
+  Zenodo-metadata and no-invented-DOI consistency check (stdlib only, offline).
+- `.zenodo.json`: related identifier (the repository, `isSupplementTo`) and a
+  `Python` keyword; `CITATION.cff`: `repository-code` and the same keyword.
 
 ### Findings recorded (see RESULTS.md)
 - All README numbers reproduce at seed 42.

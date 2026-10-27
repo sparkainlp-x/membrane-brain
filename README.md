@@ -23,6 +23,12 @@ Stdlib-only Python, seeded, reproducible, AGPL-3.0-only.
 - **holo-heart-neurons**: seeded neurons, k-nearest-neighbour
   edges, Dijkstra propagation delays.
 
+## Archive and citation
+
+Archived on Zenodo. Software DOI for v0.1.0:
+[10.5281/zenodo.23680727](https://doi.org/10.5281/zenodo.23680727) (all versions: [10.5281/zenodo.23680726](https://doi.org/10.5281/zenodo.23680726)).
+Cite via `CITATION.cff` (GitHub's "Cite this repository").
+
 ## Run
 
 ```bash

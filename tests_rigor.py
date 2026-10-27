@@ -328,11 +328,14 @@ class TestMetadata(unittest.TestCase):
         self.assertIn("0009-0000-9778-5374", read("CITATION.cff"))
         self.assertIn("Jean-François", read("CITATION.cff"))
 
-    def test_no_invented_doi(self):
-        self.assertIsNone(re.search(r"^doi:", read("CITATION.cff"), re.M))
-        self.assertNotIn("10.5281", read("CITATION.cff"))
+    def test_only_the_two_zenodo_dois_of_this_release_appear(self):
+        # Issued by Zenodo for the v0.1.0 release (read from its public API, not invented).
+        known = {"10.5281/zenodo.23680727", "10.5281/zenodo.23680726"}
+        found = set()
+        for name in ("CITATION.cff", ".zenodo.json", "README.md", "RESULTS.md", "CHANGELOG.md"):
+            found |= set(re.findall(r"10\.\d{4,9}/[A-Za-z0-9.\-_]+", read(name)))
+        self.assertEqual({d.rstrip(".") for d in found}, known)
         self.assertNotIn("10.5281", read(".zenodo.json"))
-        self.assertNotIn("10.5281", read("README.md"))
 
     def test_ci_matrix_is_310_to_313(self):
         w = read(os.path.join(".github", "workflows", "tests.yml"))

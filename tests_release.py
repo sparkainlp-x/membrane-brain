@@ -17,6 +17,9 @@ FILES = ["brain.py", "rigor.py", "tests.py", "pyproject.toml", "CITATION.cff", "
          "CHANGELOG.md", "LICENSE", "README.md", "RESULTS.md"]
 
 
+RUN_POST = lambda root: rc.run(root, post_release=True)  # noqa: E731
+
+
 def failed(rows):
     return {r["check"] for r in rows if not r["ok"]}
 
@@ -38,23 +41,23 @@ class TestReleaseCheck(unittest.TestCase):
             fh.write(fn(text))
 
     def test_the_repository_passes(self):
-        rows = rc.run(HERE)
+        rows = rc.run(HERE, post_release=True)
         self.assertEqual(failed(rows), set(), [r for r in rows if not r["ok"]])
         self.assertGreaterEqual(len(rows), 25)
 
     def test_cli_exit_codes_and_json(self):
         buf = io.StringIO()
         with redirect_stdout(buf):
-            self.assertEqual(rc.main(["--root", HERE, "--json"]), 0)
+            self.assertEqual(rc.main(["--root", HERE, "--json", "--post-release"]), 0)
         self.assertTrue(json.loads(buf.getvalue())["ok"])
         with redirect_stdout(io.StringIO()):
-            self.assertEqual(rc.main(["--root", HERE, "--tag", "v9.9.9"]), 1)
-            self.assertEqual(rc.main(["--root", HERE, "--tag", "v0.1.0"]), 0)
+            self.assertEqual(rc.main(["--root", HERE, "--post-release", "--tag", "v9.9.9"]), 1)
+            self.assertEqual(rc.main(["--root", HERE, "--post-release", "--tag", "v0.1.0"]), 0)
 
     def test_tag_must_equal_v_version(self):
-        self.assertEqual(failed(rc.run(self.tmp, tag="v0.1.0")), set())
-        self.assertIn("git tag equals v<version>", failed(rc.run(self.tmp, tag="0.1.0")))
-        self.assertIn("git tag equals v<version>", failed(rc.run(self.tmp, tag="v0.1.1")))
+        self.assertEqual(failed(rc.run(self.tmp, post_release=True, tag="v0.1.0")), set())
+        self.assertIn("git tag equals v<version>", failed(rc.run(self.tmp, post_release=True, tag="0.1.0")))
+        self.assertIn("git tag equals v<version>", failed(rc.run(self.tmp, post_release=True, tag="v0.1.1")))
 
     def test_version_drift_is_caught_in_each_file(self):
         for name, old, new in [("CITATION.cff", "version: 0.1.0", "version: 0.1.1"),
@@ -64,22 +67,31 @@ class TestReleaseCheck(unittest.TestCase):
             with self.subTest(name):
                 self.setUp()
                 self.edit(name, lambda t: t.replace(old, new, 1))
-                self.assertIn("one version everywhere", failed(rc.run(self.tmp)))
+                self.assertIn("one version everywhere", failed(rc.run(self.tmp, post_release=True)))
 
     def test_changelog_without_the_version_is_caught(self):
         self.edit("CHANGELOG.md", lambda t: t.replace("0.1.0", "0.0.9"))
-        self.assertTrue(failed(rc.run(self.tmp)))
-
-    def test_invented_doi_is_caught_before_release_and_allowed_after(self):
-        self.edit("README.md", lambda t: t + "\nDOI: 10.5281/zenodo.1234567\n")
-        self.assertIn("no DOI anywhere (none exists before the release)", failed(rc.run(self.tmp)))
-        self.assertEqual(failed(rc.run(self.tmp, post_release=True)), set())
-        self.edit("README.md", lambda t: t + "\nDOI: 10.9999/not-zenodo\n")
         self.assertTrue(failed(rc.run(self.tmp, post_release=True)))
 
-    def test_cff_doi_field_is_caught(self):
-        self.edit("CITATION.cff", lambda t: t + 'doi: "10.5281/zenodo.1"\n')
-        self.assertTrue(failed(rc.run(self.tmp)))
+    def test_pre_release_mode_rejects_any_doi_and_post_release_accepts_zenodo_ones(self):
+        self.assertIn("no DOI anywhere (none exists before the release)", failed(rc.run(self.tmp)))
+        self.assertEqual(failed(RUN_POST(self.tmp)), set())
+
+    def test_invented_or_foreign_doi_is_caught_after_release(self):
+        self.edit("README.md", lambda t: t + "\nDOI: 10.9999/not-zenodo\n")
+        self.assertTrue(failed(RUN_POST(self.tmp)))
+
+    def test_doi_must_match_between_cff_and_readme(self):
+        self.edit("README.md", lambda t: t.replace("10.5281/zenodo.23680726", "10.5281/zenodo.23680000"))
+        self.assertIn("README states both DOIs", failed(RUN_POST(self.tmp)))
+
+    def test_cff_without_a_doi_fails_post_release(self):
+        self.edit("CITATION.cff", lambda t: t.replace('doi: "10.5281/zenodo.23680727"\n', "", 1))
+        self.assertTrue(failed(RUN_POST(self.tmp)))
+
+    def test_zenodo_json_must_not_carry_a_doi(self):
+        self.edit(".zenodo.json", lambda t: t.replace('"language"', '"doi": "10.5281/zenodo.23680727", "language"'))
+        self.assertTrue(failed(RUN_POST(self.tmp)))
 
     def test_zenodo_rules(self):
         def mutate(fn):
@@ -90,7 +102,7 @@ class TestReleaseCheck(unittest.TestCase):
             fn(d)
             with open(p, "w", encoding="utf-8") as fh:
                 json.dump(d, fh, ensure_ascii=False)
-            return failed(rc.run(self.tmp))
+            return failed(rc.run(self.tmp, post_release=True))
         self.assertIn("upload_type is software", mutate(lambda d: d.update(upload_type="dataset")))
         self.assertIn("access_right is open", mutate(lambda d: d.update(access_right="closed")))
         self.assertIn(".zenodo.json uses only keys Zenodo accepts", mutate(lambda d: d.update(bogus=1)))
@@ -105,11 +117,11 @@ class TestReleaseCheck(unittest.TestCase):
 
     def test_cff_orcid_and_author_drift(self):
         self.edit("CITATION.cff", lambda t: t.replace("0009-0000-9778-5374", "0009-0000-9778-5375"))
-        self.assertTrue(failed(rc.run(self.tmp)))
+        self.assertTrue(failed(rc.run(self.tmp, post_release=True)))
 
     def test_missing_file_is_reported(self):
         os.remove(os.path.join(self.tmp, "CHANGELOG.md"))
-        self.assertEqual(failed(rc.run(self.tmp)), {"required files exist"})
+        self.assertEqual(failed(rc.run(self.tmp, post_release=True)), {"required files exist"})
 
     def test_orcid_check_digit(self):
         self.assertTrue(rc.orcid_checksum_ok("0009-0000-9778-5374"))
@@ -121,10 +133,10 @@ class TestReleaseCheck(unittest.TestCase):
         os.makedirs(os.path.join(self.tmp, "docs/game/py"))
         for f in ("brain.py", "rigor.py", "tests.py", "bridge.py"):
             shutil.copy(os.path.join(HERE, "docs/game/py", f), os.path.join(self.tmp, "docs/game/py", f))
-        self.assertEqual(failed(rc.run(self.tmp)), set())
+        self.assertEqual(failed(rc.run(self.tmp, post_release=True)), set())
         with open(os.path.join(self.tmp, "docs/game/py/brain.py"), "a") as fh:
             fh.write("\n# drift\n")
-        self.assertTrue(any("byte-identical" in c for c in failed(rc.run(self.tmp))))
+        self.assertTrue(any("byte-identical" in c for c in failed(rc.run(self.tmp, post_release=True))))
 
 
 if __name__ == "__main__":

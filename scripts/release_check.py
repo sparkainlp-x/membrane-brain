@@ -28,7 +28,7 @@ REPO_URL = "https://github.com/sparkainlp-x/membrane-brain"
 LICENSE_ID = "AGPL-3.0-only"
 AUTHOR_FAMILY, AUTHOR_GIVEN = "Brisson", "Jean-François"
 AUTHOR_ORCID = "0009-0000-9778-5374"
-DOI_RE = re.compile(r"\b10\.\d{4,9}/[^\s\"'<>)]+", re.I)
+DOI_RE = re.compile(r"\b10\.\d{4,9}/[^\s\"'<>()\[\]]+", re.I)
 ZENODO_DOI_RE = re.compile(r"^10\.5281/zenodo\.\d+$")
 # Keys Zenodo's GitHub integration accepts in .zenodo.json (legacy deposit metadata).
 ZENODO_KEYS = {
@@ -186,6 +186,16 @@ def run(root, tag=None, post_release=False):
         bad = {k: [d for d in v if not ZENODO_DOI_RE.match(d.rstrip(".,;"))] for k, v in found.items()}
         bad = {k: v for k, v in bad.items() if v}
         c.add("any DOI present is a well-formed Zenodo DOI (post-release mode)", not bad, str(bad) if bad else str(found))
+        cff_doi = cff_scalar(cff, "doi")
+        ids = re.findall(r'^\s+value:\s*"([^"]+)"', cff, re.M)
+        c.add("CFF has doi = the version DOI, listed in identifiers with the concept DOI",
+              bool(cff_doi) and bool(ZENODO_DOI_RE.match(cff_doi)) and cff_doi in ids
+              and len(ids) == 2 and all(ZENODO_DOI_RE.match(i) for i in ids) and ids[0] != ids[1],
+              "doi=%s identifiers=%s" % (cff_doi, ids))
+        c.add("README states both DOIs", bool(ids) and all(i in readme for i in ids))
+        c.add("CFF date-released is an ISO date",
+              bool(re.fullmatch(r"\d{4}-\d{2}-\d{2}", cff_scalar(cff, "date-released") or "")))
+        c.add(".zenodo.json carries no DOI (Zenodo assigns it)", "doi" not in zen and "10.5281" not in c.read(".zenodo.json"))
     else:
         c.add("no DOI anywhere (none exists before the release)", not found, str(found) if found else "")
         c.add("CFF has no doi / identifiers field", not re.search(r"^(doi|identifiers):", cff, re.M))

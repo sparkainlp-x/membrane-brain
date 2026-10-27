@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<!--
+  The Gate: a browser game that runs the real membrane-brain Python (brain.py,
+  unchanged) in WebAssembly via a vendored Pyodide. SYNTHETIC TOY, not a brain.
+  Copyright (C) 2026 Jean-François Brisson
+  SPDX-License-Identifier: AGPL-3.0-only
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU Affero General Public License v3 only, as published by
+  the Free Software Foundation. It comes WITHOUT ANY WARRANTY.
+  Source and licence: https://github.com/sparkainlp-x/membrane-brain
+  No tracking, no analytics, no cookies, no storage, no network access after
+  the page's own files (Pyodide is vendored in vendor/pyodide/).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<title>The Gate: a membrane-brain toy game (synthetic, not a brain)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="game.css">
+</head>
+<body>
+<div class="banner" role="note"><strong>A toy, not a brain.</strong> Two ellipses of 128 dots, four stored wave snapshots, one threshold. Nothing here is neuroscience, medicine or a model of any real person. Every number comes from the repository's own <code>brain.py</code>, running in your browser.</div>
+<main>
+  <header>
+    <h1>The Gate</h1>
+    <p class="lede">You are the refusal gate of a toy membrane. A wave spreads over a graph; a noisy probe arrives; name the experience it came from or <em>refuse</em> it. Then try to break the real gate.</p>
+    <p id="status" class="status" role="status" aria-live="polite" data-state="loading">Loading Python (WebAssembly)&hellip;</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Game modes">
+    <button role="tab" id="tab-observe" aria-controls="p-observe" aria-selected="true" data-tab="observe">1 Observe</button>
+    <button role="tab" id="tab-gate" aria-controls="p-gate" aria-selected="false" data-tab="gate">2 Be the gate</button>
+    <button role="tab" id="tab-break" aria-controls="p-break" aria-selected="false" data-tab="break">3 Break the gate</button>
+    <button role="tab" id="tab-check" aria-controls="p-check" aria-selected="false" data-tab="check">4 Test the code</button>
+  </nav>
+
+  <section class="stage" id="stage">
+    <canvas id="brain" width="960" height="400" role="img" aria-label="The toy brain: 128 dots in two ellipses joined by a few cross edges"></canvas>
+    <div class="legend" aria-hidden="true"><span class="sw cy"></span>phase 0.5 turn <span class="sw gd"></span>phase 0 &middot; brightness = amplitude &middot; <span class="x">&times;</span> unreachable</div>
+  </section>
+
+  <section class="panel" id="p-observe" role="tabpanel" aria-labelledby="tab-observe">
+    <h2>Watch a wave spread, then cut the bridge</h2>
+    <p class="hint">A stored experience is a wave started at one neuron: amplitude decays and phase advances with graph distance (<code>MembraneBrain.wave</code>). Pick one and press play.</p>
+    <div class="row" role="group" aria-label="Stored experience">
+      <label class="chip"><input type="radio" name="exp" value="0" checked> left-front</label>
+      <label class="chip"><input type="radio" name="exp" value="1"> left-back</label>
+      <label class="chip"><input type="radio" name="exp" value="2"> right-front</label>
+      <label class="chip"><input type="radio" name="exp" value="3"> right-back</label>
+    </div>
+    <div class="row" role="group" aria-label="Graph">
+      <label class="chip"><input type="radio" name="mode" value="intact" checked> Intact (12 cross edges)</label>
+      <label class="chip"><input type="radio" name="mode" value="cut"> Cut: delete the cross edges</label>
+      <label class="chip"><input type="radio" name="mode" value="split"> Module split: <code>coupling=False</code></label>
+    </div>
+    <div class="row">
+      <button id="play" type="button">Play</button>
+      <label class="grow">wave time <input id="tslider" type="range" min="0" max="100" value="100" step="1"></label>
+      <output id="tval">t = ?</output>
+    </div>
+    <dl class="stats" id="obs-stats"></dl>
+    <p class="hint" id="obs-note"></p>
+  </section>
+
+  <section class="panel" id="p-gate" role="tabpanel" aria-labelledby="tab-gate" hidden>
+    <h2>Be the gate</h2>
+    <div class="scoreboard" aria-live="polite">
+      <div><span class="k">round</span> <b id="g-round">0/24</b></div>
+      <div><span class="k">level</span> <b id="g-level">-</b></div>
+      <div><span class="k">you</span> <b id="g-you">0</b></div>
+      <div><span class="k">real gate</span> <b id="g-gate">0</b></div>
+    </div>
+    <p class="hint" id="g-prompt">Press Start. Each probe is one of: a noisy copy of a stored experience, a random field, or (later levels) a wave from a neuron that was never stored. Name the experience, or refuse.</p>
+    <div class="row" id="g-answers" role="group" aria-label="Your answer">
+      <button type="button" data-ans="0" disabled>left-front</button>
+      <button type="button" data-ans="1" disabled>left-back</button>
+      <button type="button" data-ans="2" disabled>right-front</button>
+      <button type="button" data-ans="3" disabled>right-back</button>
+      <button type="button" data-ans="-1" class="refuse" disabled>Refuse</button>
+    </div>
+    <div class="row">
+      <button type="button" id="g-start">Start run</button>
+      <button type="button" id="g-hint" disabled>Measure overlaps (&minus;15)</button>
+      <button type="button" id="g-next" disabled>Next</button>
+      <label class="grow">run id <input id="g-run" type="number" min="1" max="99999" value="1" aria-label="Run id"></label>
+    </div>
+    <div id="g-bars" class="bars" aria-live="polite"></div>
+    <p id="g-result" class="result" aria-live="polite"></p>
+    <details class="how"><summary>How the points work</summary>
+      <p>Right answer: <code>20 + 80h</code>, wrong: <code>&minus;(10 + 60(1&minus;h))</code>, with <code>h = 1 &minus; min(1, |max&nbsp;overlap &minus; tau| / 0.5)</code>. So a call that sits right at the gate's threshold is worth the most, and a blunder on an obvious probe costs the most. The real gate is scored with the same rule. <em>Wrong</em> includes accepting a never-stored wave: the gate can be wrong too. The round list is generated from the run id, so a run is repeatable.</p></details>
+  </section>
+
+  <section class="panel" id="p-break" role="tabpanel" aria-labelledby="tab-break" hidden>
+    <h2>Break the gate</h2>
+    <p class="hint">Goal: make the real gate <b>accept</b> a wave that is <b>not</b> one of the four stored experiences. Tap a neuron on the map to start a wave there, then dilute it with random noise. You score <code>10 &times; distance to the nearest stored seed + 100 &times; (1 &minus; wave share)</code> when the gate accepts a source at least 6 units away from every stored seed.</p>
+    <dl class="stats" id="b-stats"></dl>
+    <div class="row">
+      <label class="grow">wave share <output id="b-alpha-v">100%</output><input id="b-alpha" type="range" min="0" max="100" value="100"></label>
+      <label class="grow">noise sigma <output id="b-sigma-v">0.00</output><input id="b-sigma" type="range" min="0" max="40" value="0"></label>
+    </div>
+    <div class="row">
+      <button type="button" id="b-stealth" disabled>Find the least wave the gate still accepts</button>
+      <button type="button" id="b-scan" disabled>Scan all 128 neurons</button>
+    </div>
+    <p id="b-result" class="result" aria-live="polite">Tap a neuron on the map.</p>
+    <div id="b-bars" class="bars"></div>
+    <p class="hint">Best break score this session: <b id="b-best">0</b></p>
+    <ol id="b-log" class="log"></ol>
+  </section>
+
+  <section class="panel" id="p-check" role="tabpanel" aria-labelledby="tab-check" hidden>
+    <h2>Test the code</h2>
+    <p class="hint">These checks run the repository's own code live in your browser (Python via WebAssembly) and compare against the numbers published in the README and <code>RESULTS.md</code> section 1. A failing badge is shown as failing; nothing is hidden.</p>
+    <div class="row"><button type="button" id="c-run" disabled>Run all checks</button><output id="c-sum" aria-live="polite"></output></div>
+    <div id="c-groups"></div>
+    <p class="hint" id="c-env"></p>
+  </section>
+
+  <section class="panel tau" id="tau-panel" hidden>
+    <h2>The gate's threshold</h2>
+    <div class="row">
+      <label class="grow">tau <output id="tau-v">0.238</output><input id="tau" type="range" min="0" max="100" value="24" aria-label="Gate threshold tau"></label>
+      <button type="button" id="tau-reset">Reset to calibrated</button>
+    </div>
+    <p class="hint" id="tau-rates"></p>
+    <p class="hint">Gate rule: refuse when the best |overlap| with a stored experience is below tau. Calibrated once by <code>MembraneBrain.calibrate</code> (Youden's J on 100 noisy stored probes vs 100 random fields). Rates here are on a separate held-out set of 100 + 100.</p>
+  </section>
+
+  <footer>
+    <p>Source, licence (AGPL-3.0-only), measured results and limits: <a href="https://github.com/sparkainlp-x/membrane-brain">github.com/sparkainlp-x/membrane-brain</a>. Author: Jean-François Brisson. Python runs in a vendored Pyodide 0.26.1 (MPL-2.0; see <code>vendor/pyodide/NOTICE.md</code>). This page sets no cookies, stores nothing and makes no network requests beyond its own files.</p>
+  </footer>
+</main>
+<script src="vendor/pyodide/pyodide.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

@@ -77,6 +77,17 @@ layouts. Everything is in **[RESULTS.md](RESULTS.md)**, generated from
   cross edges does not predict the median delay; the cut leaves
   recognition unchanged at the default envelope width.
 
+## Play it, and test the code in a browser
+
+`docs/game/` is a single-page game, **The Gate**, that runs this repository's own
+`brain.py` (unchanged) in your browser through a vendored Pyodide
+(WebAssembly): watch a wave spread and cut the cross edges, play the refusal
+gate against the real one, try to break it, and press "Test the code" to
+reproduce the README numbers live with PASS/FAIL badges. Locally:
+`python -m http.server --directory docs/game 8000`. It is a toy like the rest;
+details in `docs/game/README.md`. Once GitHub Pages is switched on it is
+planned at <https://sparkainlp-x.github.io/membrane-brain/game/> (not live yet).
+
 ## Honest limits — read before any use
 
 - **Not a human brain.** No lobes, cortex, ion channels, synapses
@@ -100,5 +111,8 @@ layouts. Everything is in **[RESULTS.md](RESULTS.md)**, generated from
   their rendering to `RESULTS.md`, and their tests
 - `RESULTS.md`, `results/results.json` — measured results
 - `CHANGELOG.md`, `CITATION.cff`, `.zenodo.json`, `pyproject.toml`
+- `scripts/release_check.py`, `tests_release.py` — version / licence / ORCID /
+  Zenodo-metadata consistency check to run before tagging a release
+- `docs/game/`, `tests_game.py`, `tests_game_browser.py` — the browser game and its tests
 - `DESIGN.md` — decisions, falsified designs, limits
 - `LICENSE` — AGPL-3.0-only

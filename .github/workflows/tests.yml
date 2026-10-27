@@ -22,7 +22,20 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Tests (standard library only, no install needed)
         run: python -m unittest discover -p "test*.py" -v
+      - name: Release metadata is consistent (version, licence, ORCID, Zenodo rules)
+        run: python scripts/release_check.py
       - name: Demo reproduces the README numbers
         run: python demo.py
       - name: Quick run of the rigor experiments
         run: python rigor.py --quick
+
+  game-browser:
+    name: game in headless Chromium (Pyodide)
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright/python:v1.44.0-jammy
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install "playwright==1.44.0"
+      - name: The game runs the real brain.py in WebAssembly and agrees with CPython
+        run: python -m unittest tests_game_browser -v

@@ -42,6 +42,7 @@ class TestGameInBrowser(unittest.TestCase):
         import bridge
         cls.bridge = bridge
         cls.geo = json.loads(bridge.init(42))
+        cls.base = os.environ.get("MB_GAME_URL")      # e.g. the live GitHub Pages URL; default: local server
         handler = functools.partial(Quiet, directory=GAME)
         cls.httpd = socketserver.TCPServer(("127.0.0.1", 0), handler)
         cls.port = cls.httpd.server_address[1]
@@ -73,7 +74,7 @@ class TestGameInBrowser(unittest.TestCase):
         page.on("console", lambda m: self.logs.append((m.type, m.text)) if m.type in ("error", "warning") else None)
         page.on("pageerror", lambda e: self.logs.append(("pageerror", str(e))))
         page.on("request", lambda r: self.requests.append(r.url))
-        page.goto("http://127.0.0.1:%d/index.html" % self.port)
+        page.goto(self.base or "http://127.0.0.1:%d/index.html" % self.port)
         page.wait_for_selector("body[data-ready]", state="attached", timeout=120000)
         self.assertEqual(page.get_attribute("body", "data-ready"), "1", page.inner_text("#status"))
         return page
@@ -87,7 +88,8 @@ class TestGameInBrowser(unittest.TestCase):
         self.assertIn("128 neurons, 314 edges, 12 cross edges, tau 0.238", st)
         self.assertIn("Python 3.12", st)
         hosts = {u.split("/")[2] for u in self.requests if u.startswith("http")}
-        self.assertEqual(hosts, {"127.0.0.1:%d" % self.port})
+        want = {self.base.split("/")[2]} if self.base else {"127.0.0.1:%d" % self.port}
+        self.assertEqual(hosts, want)
         self.assertEqual([l for l in self.logs if l[0] in ("error", "pageerror")], [], self.logs)
         self.assertIn("A toy, not a brain.", page.inner_text(".banner"))
         page.close()

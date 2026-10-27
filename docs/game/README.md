@@ -4,8 +4,7 @@ A single-page game for **membrane-brain** (a synthetic toy, not a brain). The pa
 runs the repository's own `brain.py` (unchanged) in your browser through Pyodide
 (Python compiled to WebAssembly, vendored in `vendor/pyodide/`; no CDN).
 
-Planned URL after this branch is merged and GitHub Pages is switched on for
-`main` / `/docs`: <https://sparkainlp-x.github.io/membrane-brain/game/> (not live yet).
+Live on GitHub Pages (`main` / `/docs`): <https://sparkainlp-x.github.io/membrane-brain/game/>.
 To try it now: `python -m http.server --directory docs/game 8000` and open
 <http://localhost:8000/>.
 
@@ -44,4 +43,4 @@ To try it now: `python -m http.server --directory docs/game 8000` and open
 * First load downloads about 14 MB uncompressed (about 5.7 MB if the server gzips it; measured with gzip -9), then the browser caches it.
 
 Tests: `python -m unittest tests_game -v` (CPython, no browser) and, with Playwright
-and a Chromium available, `python -m unittest tests_game_browser -v`.
+and a Chromium available, `python -m unittest tests_game_browser -v` (set `MB_GAME_URL` to the live page to run the same checks against it).

@@ -13,5 +13,18 @@
   "license": "AGPL-3.0-only",
   "access_right": "open",
   "language": "eng",
-  "keywords": ["synthetic", "toy model", "associative memory", "reproducible"]
+  "keywords": [
+    "synthetic",
+    "toy model",
+    "associative memory",
+    "reproducible",
+    "Python"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/sparkainlp-x/membrane-brain",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
 }

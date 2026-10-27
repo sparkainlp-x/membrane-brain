@@ -91,8 +91,8 @@ layouts. Everything is in **[RESULTS.md](RESULTS.md)**, generated from
 gate against the real one, try to break it, and press "Test the code" to
 reproduce the README numbers live with PASS/FAIL badges. Locally:
 `python -m http.server --directory docs/game 8000`. It is a toy like the rest;
-details in `docs/game/README.md`. Once GitHub Pages is switched on it is
-planned at <https://sparkainlp-x.github.io/membrane-brain/game/> (not live yet).
+details in `docs/game/README.md`. Live (GitHub Pages) at
+<https://sparkainlp-x.github.io/membrane-brain/game/>.
 
 ## Honest limits — read before any use
 

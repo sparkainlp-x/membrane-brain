@@ -9,6 +9,15 @@ authors:
     affiliation: "Spark AI NLP, Fredericton, New Brunswick, Canada"
 repository-code: "https://github.com/sparkainlp-x/membrane-brain"
 version: 0.1.0
+doi: "10.5281/zenodo.23680727"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23680727"
+    description: "Version DOI for v0.1.0"
+  - type: doi
+    value: "10.5281/zenodo.23680726"
+    description: "Concept DOI (all versions)"
+date-released: "2026-10-27"
 license: AGPL-3.0-only
 abstract: >-
   Synthetic, stdlib-only Python toy: 128 seeded neurons in two ellipses,

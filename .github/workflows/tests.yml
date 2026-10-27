@@ -23,7 +23,7 @@ jobs:
       - name: Tests (standard library only, no install needed)
         run: python -m unittest discover -p "test*.py" -v
       - name: Release metadata is consistent (version, licence, ORCID, Zenodo rules)
-        run: python scripts/release_check.py
+        run: python scripts/release_check.py --post-release
       - name: Demo reproduces the README numbers
         run: python demo.py
       - name: Quick run of the rigor experiments

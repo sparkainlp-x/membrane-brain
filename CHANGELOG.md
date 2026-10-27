@@ -17,6 +17,7 @@ are unchanged from the supplied version.
 - `pyproject.toml`, CI workflow (Python 3.10 to 3.13), `CITATION.cff`,
   `.zenodo.json` (no DOI; none has been issued), `.gitignore`.
 - README section pointing to the results; DESIGN.md addendum.
+- Author affiliation in `CITATION.cff` and `.zenodo.json`, copied from membrane-arena-3x3.
 
 ### Findings recorded (see RESULTS.md)
 - All README numbers reproduce at seed 42.

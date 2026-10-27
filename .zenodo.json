@@ -1,0 +1,16 @@
+{
+  "title": "membrane-brain: a brain-shaped toy for a holographic-membrane associative memory with a refusal gate (synthetic)",
+  "version": "0.1.0",
+  "upload_type": "software",
+  "description": "<p>Synthetic, stdlib-only Python toy: 128 seeded neurons in two ellipses, four stored wave fields, a one-shot outer-product associative memory and a frozen refusal gate. It is not a brain, not neuroscience and not a medical or clinical tool. The repository documents measured behaviour and limits, including negative results.</p>",
+  "creators": [
+    {
+      "name": "Brisson, Jean-François",
+      "orcid": "0009-0000-9778-5374"
+    }
+  ],
+  "license": "AGPL-3.0-only",
+  "access_right": "open",
+  "language": "eng",
+  "keywords": ["synthetic", "toy model", "associative memory", "reproducible"]
+}

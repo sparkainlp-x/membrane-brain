@@ -48,3 +48,22 @@ Synthetic only. Width 12, period 40, delays in distance units —
 none of these are biological parameters. The refusal rate is a
 property of this toy's random fields, not a sensitivity or
 specificity for anything real.
+
+## Addendum after the rigor experiments (see RESULTS.md)
+
+Added without editing the decisions above. Measured in `rigor.py`:
+
+- **Envelope as a precondition: not shown in this toy.** Pure phase
+  waves from different seeds are recognised at about the same rate as
+  enveloped ones; the 0.325 quoted from membrane-heart does not
+  reproduce here. The global-phase blindness of |overlap| is real, but
+  these waves do not differ only by a global phase. The envelope is kept
+  because it lowers pattern overlaps and makes the spread statistics
+  well defined, not because recognition needs it.
+- **Split as a graph cut.** `BrainGeometry(coupling=False)` re-wires the
+  midline neurons (it drops cross candidates before the k-nearest step),
+  so it is not the intact graph minus its cross edges. "Unreachable"
+  after either operation is true by construction.
+- **Refusal.** The gate is calibrated and tested against the same two
+  generators. It refuses isotropic random fields, not unfamiliar
+  structure.

@@ -13,8 +13,13 @@ Stdlib-only Python, seeded, reproducible, AGPL-3.0-only.
   midpoint-of-best-taus improvement from membrane-vs-hopfield.
 - **membrane-heart**: waves stored as ENVELOPED phasor fields
   (amplitude decays from the seed, phase advances with distance).
-  Pure phase waves were falsified there (recognition 0.325, because
-  |overlap| is blind to global phase) and are not repeated here.
+  There, pure phase waves were reported to fail (recognition 0.325,
+  attributed to |overlap| being blind to a global phase), so this toy
+  uses the enveloped form. A pure-phase control run here recognises
+  98.5% of noisy probes (seed 95% interval 98.1 to 98.9), so the 0.325
+  was not reproduced in this toy; that is a different construction and
+  neither confirms nor refutes the membrane-heart result (see
+  RESULTS.md).
 - **holo-heart-neurons**: seeded neurons, k-nearest-neighbour
   edges, Dijkstra propagation delays.
 
@@ -22,7 +27,9 @@ Stdlib-only Python, seeded, reproducible, AGPL-3.0-only.
 
 ```bash
 python demo.py    # numbers + gate + recognition + split toy
-python tests.py   # 7 tests
+python tests.py   # 7 tests (the original suite)
+python tests_rigor.py   # experiment helpers, determinism, packaging checks
+python rigor.py --write # the rigor experiments (about 3 minutes) -> RESULTS.md
 ```
 
 ## The toy, in one paragraph
@@ -47,6 +54,29 @@ of this graph.
 - Fresh random fields refused: 50/50
 - Clean left-front probe: accept, left-front
 
+## Rigor experiments and what they found
+
+`rigor.py` (stdlib only, seeded) repeats the demo over 200 random layouts
+with confidence intervals, sweeps the noise, runs null and structural
+controls, scans the gate threshold, and measures the split toy over
+layouts. Everything is in **[RESULTS.md](RESULTS.md)**, generated from
+`results/results.json`, with a "what was falsified" section. In short
+(numbers and intervals are in RESULTS.md):
+
+- Every number above reproduces at seed 42 on Python 3.10 to 3.13.
+- Over 200 layouts the recognition and refusal rates stay near the demo's,
+  but the demo is one layout, and Youden J = 1.000 is in-sample
+  separability of two easy classes (held-out J is slightly below 1).
+- The gate refuses isotropic random fields, **not** unfamiliar structure
+  (waves from other neurons are accepted about half the time).
+- Recognition does not depend on the brain-shaped layout (random wiring
+  and random patterns do as well). Pure phase waves were recognised at
+  98.5% in this toy, so the design note's rationale for the envelope
+  (the 0.325 from membrane-heart) was not reproduced here.
+- "Unreachable after the split" is true by construction; the number of
+  cross edges does not predict the median delay; the cut leaves
+  recognition unchanged at the default envelope width.
+
 ## Honest limits — read before any use
 
 - **Not a human brain.** No lobes, cortex, ion channels, synapses
@@ -66,5 +96,9 @@ of this graph.
 - `brain.py` — geometry, wave, membrane, gate
 - `demo.py` — measured demo
 - `tests.py` — 7 tests
+- `rigor.py`, `render_results.py`, `tests_rigor.py` — rigor experiments,
+  their rendering to `RESULTS.md`, and their tests
+- `RESULTS.md`, `results/results.json` — measured results
+- `CHANGELOG.md`, `CITATION.cff`, `.zenodo.json`, `pyproject.toml`
 - `DESIGN.md` — decisions, falsified designs, limits
 - `LICENSE` — AGPL-3.0-only

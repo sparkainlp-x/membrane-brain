@@ -6,7 +6,8 @@
   "creators": [
     {
       "name": "Brisson, Jean-François",
-      "orcid": "0009-0000-9778-5374"
+      "orcid": "0009-0000-9778-5374",
+      "affiliation": "Spark AI NLP, Fredericton, New Brunswick, Canada"
     }
   ],
   "license": "AGPL-3.0-only",

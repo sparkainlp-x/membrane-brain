@@ -6,8 +6,8 @@ Stdlib-only Python, seeded, reproducible, AGPL-3.0-only.
 
 ## Latest lineage reused
 
-- **membrane-capacity**: complex oscillators, outer-product
-  holographic memory, one-shot projection (argmax |overlap|).
+- **membrane-capacity**: complex oscillators, overlap recall,
+  one-shot projection (argmax |overlap|).
 - **refusing-membrane**: REJECT iff max |overlap| < tau, tau
   calibrated once via Youden's J and frozen, with the
   midpoint-of-best-taus improvement from membrane-vs-hopfield.
@@ -102,7 +102,7 @@ details in `docs/game/README.md`. Live (GitHub Pages) at
 - **Not neuroscience, not a medical device, not a diagnosis, not
   a measurement of any real person.** The split toy says nothing
   about real split-brain patients.
-- "Holographic" here = outer-product associative memory, the
+- "Holographic" here = overlap recall over stored patterns, the
   membrane meaning — not a laser hologram and not a display.
 - Delays are in distance units, not milliseconds. Nothing here
   transfers to a real brain without a real neural model and real

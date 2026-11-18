@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (c) 2026 Jean-Francois Brisson (Spark AI NLP)
 """Tests for the rigor experiments (rigor.py, render_results.py) and the
 packaging metadata. Standard library only. Run: python tests_rigor.py
 """
@@ -317,7 +319,7 @@ class TestCommittedResults(unittest.TestCase):
 class TestMetadata(unittest.TestCase):
     def test_versions_and_authors_agree(self):
         v = brain.__version__
-        self.assertEqual(v, "0.1.0")
+        self.assertEqual(v, "0.2.0")
         self.assertIn('version = "%s"' % v, read("pyproject.toml"))
         self.assertIn("version: %s" % v, read("CITATION.cff"))
         z = json.loads(read(".zenodo.json"))
@@ -330,6 +332,9 @@ class TestMetadata(unittest.TestCase):
 
     def test_only_the_two_zenodo_dois_of_this_release_appear(self):
         # Issued by Zenodo for the v0.1.0 release (read from its public API, not invented).
+        # v0.2.0 has no version DOI yet: until Zenodo mints one, CITATION.cff
+        # `doi` points at the concept DOI (all versions) and the v0.1.0
+        # version DOI stays listed in identifiers. No DOI is invented here.
         known = {"10.5281/zenodo.23680727", "10.5281/zenodo.23680726"}
         found = set()
         for name in ("CITATION.cff", ".zenodo.json", "README.md", "RESULTS.md", "CHANGELOG.md"):

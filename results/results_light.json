@@ -1,0 +1,210 @@
+{
+  "version": "0.2.0",
+  "protocol": {
+    "sigma": 0.4,
+    "trials": 200,
+    "seed": 20261117,
+    "brain_seed": 42,
+    "n_neurons": 128,
+    "dose_grid": [
+      0.0,
+      25.0,
+      50.0,
+      100.0,
+      150.0
+    ],
+    "stress_grid": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "wavelengths_nm": [
+      630.0,
+      808.0,
+      980.0
+    ],
+    "timing": {
+      "steps": 12,
+      "onset": 2,
+      "rate": 0.1,
+      "early_time": 0,
+      "late_time": 10
+    },
+    "constants": {
+      "dose_opt": 50.0,
+      "gain": 0.03,
+      "base_atp": 1.0,
+      "wl_peak_nm": 808.0,
+      "wl_width_nm": 300.0,
+      "stress_gain": 1.5
+    }
+  },
+  "dose_rows": [
+    {
+      "dose": 0.0,
+      "wavelength_nm": 808.0,
+      "atp": 1.0,
+      "sigma_eff": 0.4,
+      "recall": 0.77
+    },
+    {
+      "dose": 25.0,
+      "wavelength_nm": 808.0,
+      "atp": 1.4548979947844751,
+      "sigma_eff": 0.2749333640117189,
+      "recall": 0.945
+    },
+    {
+      "dose": 50.0,
+      "wavelength_nm": 808.0,
+      "atp": 1.5518191617571635,
+      "sigma_eff": 0.2577619930579218,
+      "recall": 0.97
+    },
+    {
+      "dose": 100.0,
+      "wavelength_nm": 808.0,
+      "atp": 1.406005849709838,
+      "sigma_eff": 0.2844938376910376,
+      "recall": 0.945
+    },
+    {
+      "dose": 150.0,
+      "wavelength_nm": 808.0,
+      "atp": 1.2240418076553878,
+      "sigma_eff": 0.32678622372072974,
+      "recall": 0.855
+    }
+  ],
+  "stress_rows": [
+    {
+      "stress": 0.0,
+      "sigma_eff": 0.4,
+      "recall": 0.77
+    },
+    {
+      "stress": 0.25,
+      "sigma_eff": 0.55,
+      "recall": 0.61
+    },
+    {
+      "stress": 0.5,
+      "sigma_eff": 0.7000000000000001,
+      "recall": 0.445
+    },
+    {
+      "stress": 0.75,
+      "sigma_eff": 0.8500000000000001,
+      "recall": 0.36
+    },
+    {
+      "stress": 1.0,
+      "sigma_eff": 1.0,
+      "recall": 0.335
+    }
+  ],
+  "wavelength_rows": [
+    {
+      "wavelength_nm": 630.0,
+      "efficiency": 0.7032488657766182,
+      "atp": 1.3880661996195294,
+      "sigma_eff": 0.28817069395511574,
+      "recall": 0.94
+    },
+    {
+      "wavelength_nm": 808.0,
+      "efficiency": 1.0,
+      "atp": 1.5518191617571635,
+      "sigma_eff": 0.2577619930579218,
+      "recall": 0.97
+    },
+    {
+      "wavelength_nm": 980.0,
+      "efficiency": 0.7198509436510202,
+      "atp": 1.397227544315609,
+      "sigma_eff": 0.28628121570272097,
+      "recall": 0.945
+    }
+  ],
+  "timing": {
+    "early": {
+      "dose": 50.0,
+      "wavelength_nm": 808.0,
+      "light_time": 0,
+      "onset": 2,
+      "steps": 12,
+      "rate": 0.1,
+      "protection": 0.3555950173551955,
+      "stress": 0.6444049826448044,
+      "sigma_eff": 0.5069166620523923,
+      "recall": 0.645
+    },
+    "late": {
+      "dose": 50.0,
+      "wavelength_nm": 808.0,
+      "light_time": 10,
+      "onset": 2,
+      "steps": 12,
+      "rate": 0.1,
+      "protection": 0.3555950173551955,
+      "stress": 0.9288809965289608,
+      "sigma_eff": 0.616907318526322,
+      "recall": 0.545
+    },
+    "no_light": {
+      "dose": 50.0,
+      "wavelength_nm": 808.0,
+      "light_time": null,
+      "onset": 2,
+      "steps": 12,
+      "rate": 0.1,
+      "protection": 0.3555950173551955,
+      "stress": 0.9999999999999999,
+      "sigma_eff": 0.6444049826448045,
+      "recall": 0.515
+    }
+  },
+  "claims": {
+    "i_biphasic": {
+      "threshold_min_gap": 0.05,
+      "optimum_dose": 50.0,
+      "recall_dose_0": 0.77,
+      "recall_optimum": 0.97,
+      "recall_3x_optimum": 0.855,
+      "gap_optimum_minus_zero": 0.19999999999999996,
+      "gap_optimum_minus_3x": 0.11499999999999999,
+      "pass": true
+    },
+    "ii_stress": {
+      "threshold_min_drop": 0.1,
+      "recalls": [
+        0.77,
+        0.61,
+        0.445,
+        0.36,
+        0.335
+      ],
+      "non_increasing": true,
+      "total_drop": 0.435,
+      "pass": true
+    },
+    "iii_dose_beats_wavelength": {
+      "threshold_min_ratio": 2.0,
+      "dose_gap": 0.19999999999999996,
+      "wavelength_gap": 0.030000000000000027,
+      "ratio": 6.666666666666659,
+      "pass": true
+    },
+    "iv_early_beats_late": {
+      "threshold_min_gap": 0.05,
+      "early_light_time": 0,
+      "late_light_time": 10,
+      "early_recall": 0.645,
+      "late_recall": 0.545,
+      "gap": 0.09999999999999998,
+      "pass": true
+    }
+  }
+}

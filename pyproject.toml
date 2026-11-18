@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "membrane-brain"
-version = "0.1.0"
+version = "0.2.0"
 description = "A brain-shaped toy for a holographic-membrane associative memory with a refusal gate. Synthetic, stdlib-only; not a brain."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -15,4 +15,4 @@ classifiers = ["Programming Language :: Python :: 3"]
 dependencies = []
 
 [tool.setuptools]
-py-modules = ["brain", "rigor", "render_results"]
+py-modules = ["brain", "light", "rigor", "render_results"]

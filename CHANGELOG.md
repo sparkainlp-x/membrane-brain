@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.2.0 (2026-11-17)
+
+Light injection: an 808 nm PBM-style light dose coupled into the toy
+(`light.py`, stdlib only, seeded). One mechanism — ATP lowers the
+effective probe noise (`sigma_eff = sigma * (1 + 1.5*stress) / atp`),
+ATP is hormetic (peak at dose 50, declines after), wavelength
+efficiency is a wide Gaussian peaked at 808 nm, and light before
+stress onset protects more than the same light after onset (stress
+already accumulated is never removed). Four claims pre-registered
+with frozen thresholds in `tests_light.py` (14 tests); all four PASS
+at the frozen protocol (sigma 0.40, 200 trials, seed 20261117) —
+measured numbers in `results/results_light.json`, claim table in the
+README. `demo.py` gains a light section; the v0.1.0 demo numbers
+reproduce exactly. Copyright header
+(`SPDX-License-Identifier: AGPL-3.0-only` + `Copyright (c) 2026
+Jean-Francois Brisson (Spark AI NLP)`) added to every Python source
+file, including the `docs/game/py/` copies of `brain.py`, `rigor.py`
+and `tests.py`, which stay byte-identical to the root files; game
+behaviour unchanged. `light` added to `pyproject.toml` modules.
+
+No v0.2.0 Zenodo DOI exists yet — none is invented. Until Zenodo
+mints one on release, `CITATION.cff` `doi` points at the concept DOI
+(10.5281/zenodo.23680726, all versions); the v0.1.0 version DOI
+(10.5281/zenodo.23680727) stays listed in identifiers. On release,
+set `doi` to the new version DOI and add it to identifiers.
+
 ## 0.1.0 (2026-10-27)
 
 Initial packaged release of the toy. `brain.py`, `demo.py` and `tests.py`

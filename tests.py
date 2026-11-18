@@ -1,4 +1,6 @@
-"""Tests for membrane-brain v0.1.0. Run: python tests.py"""
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (c) 2026 Jean-Francois Brisson (Spark AI NLP)
+"""Tests for membrane-brain v0.2.0. Run: python tests.py"""
 
 import math
 import random

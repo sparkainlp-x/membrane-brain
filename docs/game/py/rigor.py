@@ -1,4 +1,6 @@
-"""Rigor experiments for membrane-brain v0.1.0 (stdlib only, seeded).
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (c) 2026 Jean-Francois Brisson (Spark AI NLP)
+"""Rigor experiments for membrane-brain v0.2.0 (stdlib only, seeded).
 
 SYNTHETIC toy. Nothing here is neuroscience, a clinical statement or a
 property of any real brain. Every number in RESULTS.md is produced by

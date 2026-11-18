@@ -1,8 +1,8 @@
 {
   "title": "membrane-brain: a brain-shaped toy for a holographic-membrane associative memory with a refusal gate (synthetic)",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "upload_type": "software",
-  "description": "<p>Synthetic, stdlib-only Python toy: 128 seeded neurons in two ellipses, four stored wave fields, a one-shot outer-product associative memory and a frozen refusal gate. It is not a brain, not neuroscience and not a medical or clinical tool. The repository documents measured behaviour and limits, including negative results.</p>",
+  "description": "<p>Synthetic, stdlib-only Python toy: 128 seeded neurons in two ellipses, four stored wave fields, a one-shot outer-product associative memory and a frozen refusal gate. It is not a brain, not neuroscience and not a medical or clinical tool. The repository documents measured behaviour and limits, including negative results. v0.2.0 adds an 808 nm light-dose coupling: a hormetic ATP proxy lowers effective probe noise, mitochondrial stress raises it, and light before stress onset protects recall more than the same light after onset. The light claims are pre-registered and measured in results/results_light.json.</p>",
   "creators": [
     {
       "name": "Brisson, Jean-François",
@@ -18,6 +18,7 @@
     "toy model",
     "associative memory",
     "reproducible",
+    "photobiomodulation",
     "Python"
   ],
   "related_identifiers": [

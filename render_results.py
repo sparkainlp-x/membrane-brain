@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (c) 2026 Jean-Francois Brisson (Spark AI NLP)
 """Render RESULTS.md from results/results.json (every number is read from the
 JSON; the surrounding wording is fixed text plus a few data-driven sentences).
 

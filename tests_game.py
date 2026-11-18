@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (c) 2026 Jean-Francois Brisson (Spark AI NLP)
 """Tests for the browser game's Python side and its static files (CPython only).
 
 Golden values at layout seed 42 are the README / RESULTS.md section 1 numbers.

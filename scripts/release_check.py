@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (c) 2026 Jean-Francois Brisson (Spark AI NLP)
 """Release consistency check for membrane-brain (stdlib only, read-only).
 
 Asserts, before anyone tags a release, that the version, licence, author,
@@ -8,7 +10,7 @@ rules, that no DOI has been invented, and (optionally) that a git tag
 matches the version.
 
     python scripts/release_check.py                 # pre-release state
-    python scripts/release_check.py --tag v0.1.0    # also check a tag name
+    python scripts/release_check.py --tag v0.2.0    # also check a tag name
     python scripts/release_check.py --post-release  # DOI fields now allowed
     python scripts/release_check.py --json          # machine-readable
 

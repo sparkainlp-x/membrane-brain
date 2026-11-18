@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (c) 2026 Jean-Francois Brisson (Spark AI NLP)
 """Tests for scripts/release_check.py. Run: python -m unittest tests_release -v"""
 
 import io
@@ -52,25 +54,25 @@ class TestReleaseCheck(unittest.TestCase):
         self.assertTrue(json.loads(buf.getvalue())["ok"])
         with redirect_stdout(io.StringIO()):
             self.assertEqual(rc.main(["--root", HERE, "--post-release", "--tag", "v9.9.9"]), 1)
-            self.assertEqual(rc.main(["--root", HERE, "--post-release", "--tag", "v0.1.0"]), 0)
+            self.assertEqual(rc.main(["--root", HERE, "--post-release", "--tag", "v0.2.0"]), 0)
 
     def test_tag_must_equal_v_version(self):
-        self.assertEqual(failed(rc.run(self.tmp, post_release=True, tag="v0.1.0")), set())
+        self.assertEqual(failed(rc.run(self.tmp, post_release=True, tag="v0.2.0")), set())
         self.assertIn("git tag equals v<version>", failed(rc.run(self.tmp, post_release=True, tag="0.1.0")))
         self.assertIn("git tag equals v<version>", failed(rc.run(self.tmp, post_release=True, tag="v0.1.1")))
 
     def test_version_drift_is_caught_in_each_file(self):
-        for name, old, new in [("CITATION.cff", "version: 0.1.0", "version: 0.1.1"),
-                               ("pyproject.toml", 'version = "0.1.0"', 'version = "0.1.2"'),
-                               (".zenodo.json", '"version": "0.1.0"', '"version": "0.2.0"'),
-                               ("brain.py", '__version__ = "0.1.0"', '__version__ = "0.1.3"')]:
+        for name, old, new in [("CITATION.cff", "version: 0.2.0", "version: 0.2.1"),
+                               ("pyproject.toml", 'version = "0.2.0"', 'version = "0.2.1"'),
+                               (".zenodo.json", '"version": "0.2.0"', '"version": "0.2.1"'),
+                               ("brain.py", '__version__ = "0.2.0"', '__version__ = "0.2.1"')]:
             with self.subTest(name):
                 self.setUp()
                 self.edit(name, lambda t: t.replace(old, new, 1))
                 self.assertIn("one version everywhere", failed(rc.run(self.tmp, post_release=True)))
 
     def test_changelog_without_the_version_is_caught(self):
-        self.edit("CHANGELOG.md", lambda t: t.replace("0.1.0", "0.0.9"))
+        self.edit("CHANGELOG.md", lambda t: t.replace("0.2.0", "0.0.9"))
         self.assertTrue(failed(rc.run(self.tmp, post_release=True)))
 
     def test_pre_release_mode_rejects_any_doi_and_post_release_accepts_zenodo_ones(self):
@@ -86,7 +88,7 @@ class TestReleaseCheck(unittest.TestCase):
         self.assertIn("README states both DOIs", failed(RUN_POST(self.tmp)))
 
     def test_cff_without_a_doi_fails_post_release(self):
-        self.edit("CITATION.cff", lambda t: t.replace('doi: "10.5281/zenodo.23680727"\n', "", 1))
+        self.edit("CITATION.cff", lambda t: t.replace('doi: "10.5281/zenodo.23680726"\n', "", 1))
         self.assertTrue(failed(RUN_POST(self.tmp)))
 
     def test_zenodo_json_must_not_carry_a_doi(self):

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (c) 2026 Jean-Francois Brisson (Spark AI NLP)
 """Headless-browser test of the game: runs the real Python in Pyodide (WebAssembly)
 and compares what the page shows with what CPython computes from the same code.
 

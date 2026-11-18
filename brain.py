@@ -1,4 +1,6 @@
-"""membrane-brain v0.1.0 — a sparkainlp-x membrane in a brain-shaped toy.
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (c) 2026 Jean-Francois Brisson (Spark AI NLP)
+"""membrane-brain v0.2.0 — a sparkainlp-x membrane in a brain-shaped toy.
 
 Stdlib-only Python, seeded, reproducible, AGPL-3.0-only.
 
@@ -50,7 +52,7 @@ import heapq
 import math
 import random
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 
 # ---------------------------------------------------------------- helpers
